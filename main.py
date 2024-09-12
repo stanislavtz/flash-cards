@@ -17,20 +17,30 @@ def get_random_word():
 	else:
 		data_dict = data.to_dict(orient="records")
 		current_card = rn.choice(data_dict)
-		canvas.itemconfig(word_text, text=current_card["French"])
+		canvas.itemconfig(word_text, text=current_card["French"], fill="black")
+		canvas.itemconfig(title_text, text="French", fill="black")
+		canvas.itemconfig(card_background, image=card_front_img)
 
 
 def swap_to_english():
 	canvas.itemconfig(title_text, text="English", fill="white")
 	canvas.itemconfig(word_text, text=current_card["English"], fill="white")
 	canvas.itemconfig(card_background, image=card_back_img)
+	wrong_btn.config(state="active")
+	correct_btn.config(state="active")
+
+
+def play():
+	get_random_word()
+	wrong_btn.config(state="disabled")
+	correct_btn.config(state="disabled")
+	window.after(3000, swap_to_english)
 
 
 window = Tk()
 window.title("Flashy")
 window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
 
-window.after(3000, swap_to_english)
 
 canvas = Canvas()
 canvas.config(width=800, height=560, bg=BACKGROUND_COLOR, highlightthickness=0)
@@ -42,13 +52,13 @@ word_text = canvas.create_text(400, 350, text="", font=("Ariel", 50, "normal"))
 canvas.grid(row=0, column=0, columnspan=2)
 
 x_image = PhotoImage(file="images/wrong.png")
-wrong_btn = Button(image=x_image, highlightthickness=0, command=get_random_word)
+wrong_btn = Button(image=x_image, highlightthickness=0, command=play)
 wrong_btn.grid(row=1, column=0)
 
 v_image = PhotoImage(file="images/right.png")
-wrong_btn = Button(image=v_image, highlightthickness=0, command=get_random_word)
-wrong_btn.grid(row=1, column=1)
+correct_btn = Button(image=v_image, highlightthickness=0, command=play)
+correct_btn.grid(row=1, column=1)
 
-get_random_word()
+play()
 
 window.mainloop()
